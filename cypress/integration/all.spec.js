@@ -8,9 +8,9 @@ const addTodo = text => {
 
 context("Todo MVC", () => {
 	beforeEach(() => {
-		cy.request("POST", "/reset", {
-			todos: []
-		});
+		// cy.request("POST", "/reset", {
+		// 	todos: []
+		// });
 	});
 
 	beforeEach(() => {
@@ -21,11 +21,12 @@ context("Todo MVC", () => {
 		cy.contains("h1", "todos").should("exist");
 	});
 
-	it("starts with zero item", () => {
+	it.only("starts with zero item", () => {
+		// cy.wait(3000);
 		cy.get(".todo").should("have.length", 0);
 	});
 
-	it.only("adds two items", () => {
+	it("adds two items", () => {
 		addTodo("item 1");
 		cy.contains(".todo", "item 1").should("exist");
 		addTodo("item 2");
