@@ -19,4 +19,16 @@ context("Store tests", () => {
 			.its("app.$store.state.todos")
 			.should("have.length", 2);
 	});
+	it.only("create item with id 1", () => {
+		cy.server();
+		cy.route("POST", "/todos").as("newItem");
+		addTodo("something");
+		cy.wait("@newItem")
+			.its("request.body")
+			.should("deep.equal", {
+				id: "1",
+				title: "something",
+				completed: false
+			});
+	});
 });
