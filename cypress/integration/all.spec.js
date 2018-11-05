@@ -8,14 +8,14 @@ const addTodo = text => {
 
 context("Todo MVC", () => {
 	beforeEach(() => {
-		// cy.request("POST", "/reset", {
-		// 	todos: []
-		// });
+		cy.request("POST", "/reset", {
+			todos: []
+		});
 	});
 
-	beforeEach(() => {
-		cy.visit("/");
-	});
+	// beforeEach(() => {
+	// 	cy.visit("/");
+	// });
 
 	it("loads", () => {
 		cy.contains("h1", "todos").should("exist");
@@ -23,6 +23,12 @@ context("Todo MVC", () => {
 
 	it.only("starts with zero item", () => {
 		// cy.wait(3000);
+		cy.server();
+		cy.route("/todos").as("getTodo");
+		cy.visit("/");
+		cy.wait("@getTodo")
+			.its("response.body")
+			.should("have.length", 0);
 		cy.get(".todo").should("have.length", 0);
 	});
 
