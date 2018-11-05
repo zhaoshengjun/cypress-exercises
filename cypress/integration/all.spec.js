@@ -1,7 +1,7 @@
 /// <reference types="Cypress" />
 context("Todo MVC", () => {
 	beforeEach(() => {
-		cy.visit("localhost:3000");
+		cy.visit("/");
 	});
 
 	it("loads", () => {
