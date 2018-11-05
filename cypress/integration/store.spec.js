@@ -18,7 +18,7 @@ context("Store tests", () => {
 				cy.stub(Math, "random", () => {
 					// inside app.js, it will use substr(2,10) as the id
 					return `0.${count++}`;
-				});
+				}).as("random");
 			});
 	});
 
@@ -29,7 +29,7 @@ context("Store tests", () => {
 			.its("app.$store.state.todos")
 			.should("have.length", 2);
 	});
-	it.only("create item with id 1", () => {
+	it("create item with id 1", () => {
 		cy.server();
 		cy.route("POST", "/todos").as("newItem");
 		addTodo("something");
@@ -40,5 +40,20 @@ context("Store tests", () => {
 				title: "something",
 				completed: false
 			});
+	});
+	it.only("creates an item with id using a stub", () => {
+		cy.server();
+		cy.route("POST", "/todos").as("newItem");
+		addTodo("something");
+		cy.wait("@newItem")
+			.its("request.body")
+			.should("deep.equal", {
+				id: "1",
+				title: "something",
+				completed: false
+			});
+		cy.get("@random").should("have.been.calledOnce");
+		addTodo("other things");
+		cy.get("@random").should("have.been.calledTwice");
 	});
 });
