@@ -1,4 +1,11 @@
 /// <reference types="Cypress" />
+
+const addTodo = text => {
+	cy.get(".new-todo")
+		.type(text)
+		.type("{enter}");
+};
+
 context("Todo MVC", () => {
 	beforeEach(() => {
 		cy.visit("/");
@@ -12,14 +19,10 @@ context("Todo MVC", () => {
 		cy.get(".todo").should("have.length", 0);
 	});
 
-	it("adds two items", () => {
-		cy.get(".new-todo")
-			.type("item 1")
-			.type("{enter}");
+	it.only("adds two items", () => {
+		addTodo("item 1");
 		cy.contains(".todo", "item 1").should("exist");
-		cy.get(".new-todo")
-			.type("item 2")
-			.type("{enter}");
+		addTodo("item 2");
 		cy.contains(".todo", "item 2").should("exist");
 	});
 });
