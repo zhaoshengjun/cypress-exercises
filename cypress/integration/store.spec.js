@@ -7,9 +7,19 @@ context("Store tests", () => {
 			todos: []
 		});
 	});
-
 	beforeEach(() => {
 		cy.visit("/");
+	});
+	beforeEach(() => {
+		let count = 1;
+		cy.window()
+			.its("Math")
+			.then(Math => {
+				cy.stub(Math, "random", () => {
+					// inside app.js, it will use substr(2,10) as the id
+					return `0.${count++}`;
+				});
+			});
 	});
 
 	it("adds item to store", () => {
