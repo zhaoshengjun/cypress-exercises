@@ -11,15 +11,15 @@ context("Store tests", () => {
 		cy.visit("/");
 	});
 	beforeEach(() => {
-		let count = 1;
-		cy.window()
-			.its("Math")
-			.then(Math => {
-				cy.stub(Math, "random", () => {
-					// inside app.js, it will use substr(2,10) as the id
-					return `0.${count++}`;
-				}).as("random");
-			});
+		// let count = 1;
+		// cy.window()
+		// 	.its("Math")
+		// 	.then(Math => {
+		// 		cy.stub(Math, "random", () => {
+		// 			// inside app.js, it will use substr(2,10) as the id
+		// 			return `0.${count++}`;
+		// 		}).as("random");
+		// 	});
 	});
 
 	it("adds item to store", () => {
@@ -58,15 +58,31 @@ context("Store tests", () => {
 		cy.get("@random").should("have.been.calledTwice");
 	});
 
-	it.only("add 2 todo items", () => {
+	it("add 2 todo items", () => {
 		addTodo("something");
 		addTodo("other things");
 		cy.window()
 			.its("app.$store.state.todos")
-			.should("have.length", 2)
+			.should("have.length", 2) // it's an array
 			.should("deep.equal", [
 				{ id: "1", title: "something", completed: false },
 				{ id: "2", title: "other things", completed: false }
 			]);
+	});
+
+	it.only("dispatch actions", () => {
+		// cy.window().its("app.$store.dispatch")("addTodo");
+		cy.server();
+		cy.route("POST", "/todos").as("newTodo");
+		cy.window()
+			.its("app.$store")
+			.then(store => {
+				store.dispatch("setNewTodo", "something");
+				store.dispatch("addTodo");
+				// store.dispatch("clearNewTodo");
+				cy.wait("@newTodo")
+					.its("response.body")
+					.should("contain", { title: "something" }); // it's an object
+			});
 	});
 });
