@@ -79,7 +79,7 @@ context("Store tests", () => {
 			.then(store => {
 				store.dispatch("setNewTodo", "something");
 				store.dispatch("addTodo");
-				// store.dispatch("clearNewTodo");
+				store.dispatch("clearNewTodo");
 				cy.wait("@newTodo")
 					.its("response.body")
 					.should("contain", { title: "something" }); // it's an object
