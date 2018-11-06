@@ -41,7 +41,8 @@ context("Store tests", () => {
 				completed: false
 			});
 	});
-	it.only("creates an item with id using a stub", () => {
+
+	it("creates an item with id using a stub", () => {
 		cy.server();
 		cy.route("POST", "/todos").as("newItem");
 		addTodo("something");
@@ -55,5 +56,17 @@ context("Store tests", () => {
 		cy.get("@random").should("have.been.calledOnce");
 		addTodo("other things");
 		cy.get("@random").should("have.been.calledTwice");
+	});
+
+	it.only("add 2 todo items", () => {
+		addTodo("something");
+		addTodo("other things");
+		cy.window()
+			.its("app.$store.state.todos")
+			.should("have.length", 2)
+			.should("deep.equal", [
+				{ id: "1", title: "something", completed: false },
+				{ id: "2", title: "other things", completed: false }
+			]);
 	});
 });
